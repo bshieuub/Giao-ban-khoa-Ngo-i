@@ -1,0 +1,5 @@
+{
+  "name": "Báo cáo Giao ban Khoa Ngoại",
+  "description": "Một ứng dụng web để tạo báo cáo giao ban hàng ngày cho khoa ngoại và xuất ra file PowerPoint.",
+  "requestFramePermissions": []
+}
