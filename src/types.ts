@@ -38,7 +38,7 @@ export interface ReportData {
 
   // Thay thế Ghi chú/Kế hoạch bằng danh sách bàn giao
   severePatientHandovers: SeverePatientHandover[];
-
+  
   // Ghi chú thêm
   additionalNotes: string;
 }

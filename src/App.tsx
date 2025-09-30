@@ -5,6 +5,7 @@ import Header from './components/Header';
 import SectionCard from './components/SectionCard';
 import InputField from './components/InputField';
 import TextAreaField from './components/TextAreaField';
+import { InfoIcon, UsersIcon, ScalpelIcon, AlertTriangleIcon, ClipboardListIcon } from './components/icons';
 
 const getInitialData = (date: string): ReportData => ({
   reportDate: date,
@@ -37,9 +38,7 @@ const App: React.FC = () => {
     try {
       const savedData = localStorage.getItem(`report_${currentDate}`);
       if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        // Ensure new fields are present when loading old data
-        setReportData({ ...getInitialData(currentDate), ...parsedData });
+        setReportData(JSON.parse(savedData));
       } else {
         setReportData(getInitialData(currentDate));
       }
@@ -139,7 +138,7 @@ const App: React.FC = () => {
     const buttonText = type === 'scheduled' ? 'Thêm ca mổ chương trình' : 'Thêm ca mổ cấp cứu';
 
     return (
-      <SectionCard title={title}>
+      <SectionCard title={title} icon={<ScalpelIcon />}>
         <div className="space-y-4">
           {details.map((surgery, index) => (
             <div key={surgery.id} className="p-4 border border-slate-200 rounded-lg bg-slate-50 relative">
@@ -168,7 +167,7 @@ const App: React.FC = () => {
 
   const renderSevereHandovers = () => {
     return (
-      <SectionCard title="Bệnh nặng trong kíp trực và bàn giao kíp sau">
+      <SectionCard title="Bệnh nặng trong kíp trực và bàn giao kíp sau" icon={<AlertTriangleIcon />}>
         <div className="space-y-4">
           {reportData.severePatientHandovers.map((handover, index) => (
             <div key={handover.id} className="p-4 border border-slate-200 rounded-lg bg-slate-50 relative">
@@ -201,14 +200,14 @@ const App: React.FC = () => {
       <Header />
       <main className="container mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
         <div className="space-y-6">
-          <SectionCard title="Thông tin chung">
+          <SectionCard title="Thông tin chung" icon={<InfoIcon />}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <InputField label="Tua trực ngày" type="date" name="reportDate" value={reportData.reportDate} onChange={handleInputChange} />
               <InputField label="Kíp trực" type="text" name="onDutyTeam" value={reportData.onDutyTeam} onChange={handleInputChange} placeholder="Nhập tên các thành viên..." />
             </div>
           </SectionCard>
 
-          <SectionCard title="Tình hình người bệnh">
+          <SectionCard title="Tình hình người bệnh" icon={<UsersIcon />}>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
               <InputField label="Bệnh nhân cũ" type="number" name="previousPatients" value={reportData.previousPatients.toString()} onChange={handleInputChange} />
               <InputField label="Vào viện" type="number" name="newAdmissions" value={reportData.newAdmissions.toString()} onChange={handleInputChange} />
@@ -222,7 +221,7 @@ const App: React.FC = () => {
             </div>
           </SectionCard>
 
-          <SectionCard title="Phẫu thuật (Tổng quan)">
+          <SectionCard title="Phẫu thuật (Tổng quan)" icon={<ScalpelIcon />}>
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <InputField label="Số ca mổ chương trình" type="number" name="scheduledSurgeriesCount" value={reportData.scheduledSurgeriesCount.toString()} onChange={handleInputChange} />
                 <InputField label="Số ca mổ cấp cứu" type="number" name="emergencySurgeriesCount" value={reportData.emergencySurgeriesCount.toString()} onChange={handleInputChange} />
@@ -234,7 +233,7 @@ const App: React.FC = () => {
           
           {renderSevereHandovers()}
 
-          <SectionCard title="Ghi chú thêm">
+          <SectionCard title="Ghi chú thêm" icon={<ClipboardListIcon />}>
             <TextAreaField
               label="Các vấn đề khác cần báo cáo"
               name="additionalNotes"

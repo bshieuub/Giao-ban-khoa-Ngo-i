@@ -1,4 +1,5 @@
 import type { ReportData, SurgeryDetail, SeverePatientHandover } from '../types';
+import { buhLogoBase64 } from '../assets/logo';
 
 // Let TypeScript know that PptxGenJS is available on the global window object
 declare var PptxGenJS: any;
@@ -11,11 +12,23 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
       // --- Presentation Properties ---
       pptx.layout = 'LAYOUT_WIDE';
       pptx.author = 'Surgical Department';
-      pptx.company = 'Hospital';
+      pptx.company = 'BUH';
       pptx.title = `Báo cáo giao ban Khoa Ngoại - ${data.reportDate}`;
+
+      // --- Reusable function to add logo ---
+      const addLogo = (slide: any) => {
+        slide.addImage({
+          data: buhLogoBase64,
+          x: 12.3,
+          y: 0.25,
+          w: 0.8,
+          h: 0.8
+        });
+      };
 
       // --- Slide 1: Title Slide ---
       const titleSlide = pptx.addSlide();
+      addLogo(titleSlide);
       titleSlide.background = { color: '003366' };
       titleSlide.addText('BÁO CÁO GIAO BAN KHOA NGOẠI', {
         x: 0.5, y: 1.5, w: '90%', h: 1, align: 'center', fontSize: 36, color: 'FFFFFF', bold: true
@@ -36,6 +49,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
 
       // --- Slide 2: Patient Statistics ---
       const patientSlide = pptx.addSlide();
+      addLogo(patientSlide);
       patientSlide.addText('Tình hình người bệnh', titleOpts);
       const patientRows = [
         [{ text: 'Hạng mục', options: cellHeaderStyle }, { text: 'Số lượng', options: cellHeaderStyle }],
@@ -53,6 +67,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
 
       // --- Slide 3: Surgical Report (Overview) ---
       const surgeryOverviewSlide = pptx.addSlide();
+      addLogo(surgeryOverviewSlide);
       surgeryOverviewSlide.addText('Báo cáo Phẫu thuật - Tổng quan', titleOpts);
       const totalSurgeries = data.scheduledSurgeriesCount + data.emergencySurgeriesCount;
       const surgeryOverviewRows = [
@@ -68,6 +83,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
           if (details.length === 0) return;
 
           const slide = pptx.addSlide();
+          addLogo(slide);
           slide.addText(title, titleOpts);
 
           const tableHeader = [
@@ -78,7 +94,9 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
               { text: 'Xử trí', options: cellHeaderStyle },
               { text: 'Phẫu thuật viên', options: cellHeaderStyle },
           ];
-          const detailRows: Array<Array<{ text: string | number; options: object }>> = [tableHeader];
+          
+          type TableRow = Array<{ text: string | number; options: object }>;
+          const detailRows: TableRow[] = [tableHeader];
           
           details.forEach((surgery, index) => {
               detailRows.push([
@@ -100,15 +118,14 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
 
       // --- Function to create handover slide ---
       const createHandoverSlide = (title: string, handovers: SeverePatientHandover[]) => {
+        const slide = pptx.addSlide();
+        addLogo(slide);
+        slide.addText(title, titleOpts);
+
         if (handovers.length === 0) {
-            const slide = pptx.addSlide();
-            slide.addText(title, titleOpts);
             slide.addText('Không có bệnh nhân nặng cần bàn giao.', { x: 0.5, y: 1.5, w: '90%', h: 1, align: 'center', fontSize: 18, color: '555555' });
             return;
         }
-
-        const slide = pptx.addSlide();
-        slide.addText(title, titleOpts);
         
         const tableHeader = [
             { text: 'STT', options: { ...cellHeaderStyle, w: 0.5 } },
@@ -117,7 +134,9 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
             { text: 'Chẩn đoán', options: cellHeaderStyle },
             { text: 'Tình hình & Bàn giao', options: cellHeaderStyle },
         ];
-        const handoverRows: Array<Array<{ text: string | number; options: object }>> = [tableHeader];
+        
+        type TableRow = Array<{ text: string | number; options: object }>;
+        const handoverRows: TableRow[] = [tableHeader];
 
         handovers.forEach((handover, index) => {
             handoverRows.push([
@@ -125,7 +144,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
                 { text: handover.patientName || '', options: cellStyle },
                 { text: handover.birthYear || '', options: cellContentStyle },
                 { text: handover.diagnosis || '', options: cellStyle },
-                { text: handover.currentStatus || '', options: { ...cellStyle, align: 'left' } },
+                { text: handover.currentStatus || '', options: { ...cellStyle, align: 'left', valign: 'top' } },
             ]);
         });
 
@@ -140,6 +159,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
         if (!notes || notes.trim() === '') return;
 
         const slide = pptx.addSlide();
+        addLogo(slide);
         slide.addText(title, titleOpts);
         slide.addText(notes, {
             x: 0.5,
