@@ -11,24 +11,27 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
 
       // --- Presentation Properties ---
       pptx.layout = 'LAYOUT_WIDE';
-      pptx.author = 'Surgical Department';
+      pptx.author = 'bshieuubdl@gmail.com';
       pptx.company = 'BUH';
       pptx.title = `Báo cáo giao ban Khoa Ngoại - ${data.reportDate}`;
 
-      // --- Reusable function to add logo ---
-      const addLogo = (slide: any) => {
+      // --- Reusable function to add logo and footer ---
+      const addBranding = (slide: any) => {
+        // Logo
         slide.addImage({
           data: buhLogoBase64,
-          x: 12.3,
-          y: 0.25,
-          w: 0.8,
-          h: 0.8
+          x: 12.3, y: 0.25, w: 0.8, h: 0.8
+        });
+        // Footer
+        slide.addText('bshieuubdl@gmail.com', { 
+            x: 0, y: 7.2, w: '100%', h: 0.25, 
+            align: 'center', fontSize: 8, color: 'AAAAAA' 
         });
       };
 
       // --- Slide 1: Title Slide ---
       const titleSlide = pptx.addSlide();
-      addLogo(titleSlide);
+      addBranding(titleSlide);
       titleSlide.background = { color: '003366' };
       titleSlide.addText('BÁO CÁO GIAO BAN KHOA NGOẠI', {
         x: 0.5, y: 1.5, w: '90%', h: 1, align: 'center', fontSize: 36, color: 'FFFFFF', bold: true
@@ -36,8 +39,9 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
       titleSlide.addText(`Tua trực ngày: ${new Date(data.reportDate).toLocaleDateString('vi-VN')}`, {
         x: 0.5, y: 3.0, w: '90%', h: 0.75, align: 'center', fontSize: 24, color: 'F1F1F1'
       });
-      titleSlide.addText(`Kíp trực: ${data.onDutyTeam || 'Chưa nhập'}`, {
-        x: 0.5, y: 4.0, w: '90%', h: 0.75, align: 'center', fontSize: 20, color: 'F1F1F1'
+      const onDutyTeamText = `Bác sĩ: ${data.onDutyTeam.doctors || 'Chưa nhập'}\nĐiều dưỡng: ${data.onDutyTeam.nurses || 'Chưa nhập'}`;
+      titleSlide.addText(onDutyTeamText, {
+        x: 0.5, y: 4.0, w: '90%', h: 1.0, align: 'center', fontSize: 20, color: 'F1F1F1'
       });
 
       // Define reusable styles
@@ -49,7 +53,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
 
       // --- Slide 2: Patient Statistics ---
       const patientSlide = pptx.addSlide();
-      addLogo(patientSlide);
+      addBranding(patientSlide);
       patientSlide.addText('Tình hình người bệnh', titleOpts);
       const patientRows = [
         [{ text: 'Hạng mục', options: cellHeaderStyle }, { text: 'Số lượng', options: cellHeaderStyle }],
@@ -67,7 +71,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
 
       // --- Slide 3: Surgical Report (Overview) ---
       const surgeryOverviewSlide = pptx.addSlide();
-      addLogo(surgeryOverviewSlide);
+      addBranding(surgeryOverviewSlide);
       surgeryOverviewSlide.addText('Báo cáo Phẫu thuật - Tổng quan', titleOpts);
       const totalSurgeries = data.scheduledSurgeriesCount + data.emergencySurgeriesCount;
       const surgeryOverviewRows = [
@@ -83,7 +87,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
           if (details.length === 0) return;
 
           const slide = pptx.addSlide();
-          addLogo(slide);
+          addBranding(slide);
           slide.addText(title, titleOpts);
 
           const tableHeader = [
@@ -94,9 +98,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
               { text: 'Xử trí', options: cellHeaderStyle },
               { text: 'Phẫu thuật viên', options: cellHeaderStyle },
           ];
-          
-          type TableRow = Array<{ text: string | number; options: object }>;
-          const detailRows: TableRow[] = [tableHeader];
+          const detailRows: Array<Array<{ text: string | number; options: object }>> = [tableHeader];
           
           details.forEach((surgery, index) => {
               detailRows.push([
@@ -119,14 +121,14 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
       // --- Function to create handover slide ---
       const createHandoverSlide = (title: string, handovers: SeverePatientHandover[]) => {
         const slide = pptx.addSlide();
-        addLogo(slide);
+        addBranding(slide);
         slide.addText(title, titleOpts);
 
         if (handovers.length === 0) {
             slide.addText('Không có bệnh nhân nặng cần bàn giao.', { x: 0.5, y: 1.5, w: '90%', h: 1, align: 'center', fontSize: 18, color: '555555' });
             return;
         }
-        
+
         const tableHeader = [
             { text: 'STT', options: { ...cellHeaderStyle, w: 0.5 } },
             { text: 'Họ tên', options: cellHeaderStyle },
@@ -134,9 +136,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
             { text: 'Chẩn đoán', options: cellHeaderStyle },
             { text: 'Tình hình & Bàn giao', options: cellHeaderStyle },
         ];
-        
-        type TableRow = Array<{ text: string | number; options: object }>;
-        const handoverRows: TableRow[] = [tableHeader];
+        const handoverRows: Array<Array<{ text: string | number; options: object }>> = [tableHeader];
 
         handovers.forEach((handover, index) => {
             handoverRows.push([
@@ -159,7 +159,7 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
         if (!notes || notes.trim() === '') return;
 
         const slide = pptx.addSlide();
-        addLogo(slide);
+        addBranding(slide);
         slide.addText(title, titleOpts);
         slide.addText(notes, {
             x: 0.5,
@@ -177,7 +177,8 @@ export const exportToPowerPoint = (data: ReportData): Promise<void> => {
       createNotesSlide('Ghi chú thêm', data.additionalNotes);
 
       // --- Save the Presentation ---
-      const fileName = `BaoCaoGiaoBan_KhoaNgoai_${data.reportDate.replace(/-/g, '')}.pptx`;
+      const [year, month, day] = data.reportDate.split('-');
+      const fileName = `${day}-${month}-${year}.pptx`;
       pptx.writeFile({ fileName: fileName }).then(() => {
         resolve();
       });

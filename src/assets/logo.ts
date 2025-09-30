@@ -1,19 +1,2 @@
-// This file contains the BUH logo as a base64 encoded string for embedding in the PowerPoint export.
-// The SVG was converted to base64 to be used by the PptxGenJS library.
-
-const svgString = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="128" height="128">
-    <circle cx="50" cy="50" r="48" fill="#FFFFFF" stroke="#003366" stroke-width="4" />
-    <path d="M50 25 V75 M25 50 H75" stroke="#22C55E" stroke-width="12" stroke-linecap="round" />
-    <path d="M50 25 V75 M25 50 H75" stroke="#16A34A" stroke-width="6" stroke-linecap="round" />
-    <text font-family="Arial, sans-serif" font-size="30" fill="#003366" text-anchor="middle" font-weight="bold">
-      <tspan x="50" y="22">B</tspan>
-      <tspan x="50" y="86">H</tspan>
-      <tspan x="26" y="58">U</tspan>
-    </text>
-  </svg>
-`;
-
-// In a browser environment, you can use btoa. 
-// For simplicity, the pre-converted string is used here.
-export const buhLogoBase64 = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0OCIgZmlsbD0iI0ZGRkZGRiIgc3Ryb2tlPSIjMDAzMzY2IiBzdHJva2Utd2lkdGg9IjQiIC8+CiAgICA8cGF0aCBkPSJNNTAgMjUgVjc1IE0yNSA1MCBINzUiIHN0cm9rZT0iIzIyQzU1RSIgc3Ryb2tlLXdpZHRoPSIxMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiAvPgogICAgPHBhdGggZD0iTTUwIDI1IFY3NSBNMjUgNTAgSDc1IiBzdHJva2U9IiMxNkEzNEEiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiAvPgogICAgPHRleHQgZm9udC1mYW1pbH0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIGZpbGw9IiMwMDMzNjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIj4KICAgICAgPHRzcGFuIHg9IjUwIiB5PSIyMiI+QjwvdHNwYW4+CiAgICAgIDx0c3BhbiB4PSI1MCIgeT0iODYiPkg8L3RzcGFuPgogICAgICA8dHNwYW4geD0iMjYiIHk9IjU4Ij5VPC90c3Bhbj4KICAgIDwvdGV4dD4KICA8L3N2Zz4=';
+// This file contains the BUH logo as a base64 encoded string for embedding in the UI and PowerPoint export.
+export const buhLogoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAARJSURBVHhe7ZtNbxtFFMfP3M+xl4CFRgS1aKogIYSQkChUEg9QVBJ//wGqUqJEFEHwkx4pFRXyQ6RAUSK1F+SDVFSoUNQgVQSpUfCAVqjYim3t9d6Zsf+9s509u7uT6b0/yUhmZ2fP+53vZ2dnZ2cMQUNDgwgGg1iY+D0eD4yMjGA4HPL7/ViYGCorK5nP50kkEiwvL5+anp6Oubk5zM3NwePxwOVywWq1wuVyYWFhgb29Pba3t5FMJvH29gYv+Gq1GpvNZm5uLsRiMTo6OhoaGprS09PjcrkMDAxwdHRUMpmkr6+Pd+LxeEkkEjo6OkwmkzQajZ6ensHBwdLS0jwez8HBQW9vLxaLhVwuJ5PJNDU1RU1NjclkEgBYLBa9vb1SqVTu7u7y8vL0ej1BEGzevJmBgQFOTk4qKiqIRCJkMhmat29fXV2d8vJyLBYLZ2dnlUrlzMwMAHh6esLAwIDBYLC0tJSbmxtWqxWv1ysQCHh7e3N6elqpVBYWFo6Pj2u12lQqVVBQkM/n09bWlsvlggDA3d2dyWTi7e1NEARBEMRiMY/HIxQKNTU1ZWZmNjc35/f7AYCpqSnc3d15eXlpNBqr1aoAgN1uZ2VlJRaLubi4eHx8PDY2lslkUlNTc3BwAIARIqGmpgb7+/u8vLzQarVyuVxNTc3Y2Ni4uLhcLpfb29vJZLKyshIA2NnZaWhoKBaLlZWVubm5eXp6wuVyDQ0NIYShoSHOzs68vb2JRCJ8Ph+v1wshNTU1AQBBEFwu18LCQgDA0dHRycnJ0tJSBEGcnZ0BAENDQ5ydnRkaGqKoqMjn8wEAarWaTqdxdrbW09MTl8tVqVTa2tpyc3MDAPYPDw+rq6tNTU3xeLwXlEql8vLy/H5/Xl7e1tbW6enpvQTQ3NwcBwcHHh4euFwupVLJyckJgNfX1wDAzs4OANjb22MwGJSVldXV1TU3NwcArFarra2t5eXlrq6u5eXlNTU14XBYEASBQMDh4WFERMTZ2RmgAwBtbW0qKioMDAwgBE9PTzAYDIqiVCrV2NiYoighISEAYGNjg5OTE8dxR0dHmZmZLS0tfD5fY2MjBwcHXV1dDAaDTqfT6XQikUin08lkMplMJpPJxOPxTqeTSqXy8vJkWpBSSikBAQEAYHR0lJOTEzRNK5XKycnJhIQEALCxsWFychLbtlqtFk3ThmHYtm3btnEcBwYGxsbGtm2bJEmCILh9+zYjIyNIpKWlJQAQiUScnJycnZ2tra3NzMycnJxkMpnf72dkZCQSiWxtbcViMaIoWlhYGBgYWFhY4PF4BEHYvXt3fHx8dHR0eXk5AJBIJHx8fBwdHS0sLHA4HLqun5ycNDY2trS09Pf3t7a29vT0xOPx9vLy0tDQ0NbWNjc3JycnV1VRUVVXV1dXV1VRU1NfXV1RU5OXl1dfXt7e39/LycnBwAADg8/lUVVUBAPr6+kKh0NXVVVBQkJaWtr29/fLyor+/n06nY2Jienp6WlpaqqqqioqKuru7u7q6+vr6uru7+/v7e3h4eHh4eHl5ubu7y8vL+/v7e3l5ubq66urqWlhYWFhYUFNTk5+fX1NTEwBwdnZWVVV1cXFxcnJycHBwc3NzcnLS1NSUn58HAJqmvb29TU1NXV1dDAaDTdOaTCZN09xuN6dzoVQq1el0kiThOM62bSKRyOfzsVgspVLJbreLi4vxeDwWi0VRxOvxenw8HovFIhQKNRoNiqJSSiHEdrvJZDKxWGx/f5/H4/H7/X6/n81mA+B9QRAEQRAEQRAE4R/+F+fI6bJ4i+KNAAAAAElFTkSuQmCC';

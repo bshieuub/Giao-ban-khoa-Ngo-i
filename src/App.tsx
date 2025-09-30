@@ -5,11 +5,10 @@ import Header from './components/Header';
 import SectionCard from './components/SectionCard';
 import InputField from './components/InputField';
 import TextAreaField from './components/TextAreaField';
-import { InfoIcon, UsersIcon, ScalpelIcon, AlertTriangleIcon, ClipboardListIcon } from './components/icons';
 
 const getInitialData = (date: string): ReportData => ({
   reportDate: date,
-  onDutyTeam: '',
+  onDutyTeam: { doctors: '', nurses: '' },
   previousPatients: 0,
   newAdmissions: 0,
   discharges: 0,
@@ -38,7 +37,12 @@ const App: React.FC = () => {
     try {
       const savedData = localStorage.getItem(`report_${currentDate}`);
       if (savedData) {
-        setReportData(JSON.parse(savedData));
+        const parsedData = JSON.parse(savedData);
+        // Handle backward compatibility for old onDutyTeam string format
+        if (typeof parsedData.onDutyTeam === 'string') {
+          parsedData.onDutyTeam = { doctors: parsedData.onDutyTeam, nurses: '' };
+        }
+        setReportData({ ...getInitialData(currentDate), ...parsedData });
       } else {
         setReportData(getInitialData(currentDate));
       }
@@ -60,6 +64,17 @@ const App: React.FC = () => {
     }));
   };
   
+  const handleOnDutyTeamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target; // name will be 'doctors' or 'nurses'
+    setReportData(prevData => ({
+      ...prevData,
+      onDutyTeam: {
+        ...prevData.onDutyTeam,
+        [name]: value,
+      }
+    }));
+  };
+
   // --- Surgery Handlers ---
   const handleAddSurgery = (type: 'scheduled' | 'emergency') => {
     const newSurgery: SurgeryDetail = { id: crypto.randomUUID(), patientName: '', birthYear: '', diagnosis: '', procedure: '', surgeon: '' };
@@ -138,7 +153,7 @@ const App: React.FC = () => {
     const buttonText = type === 'scheduled' ? 'Thêm ca mổ chương trình' : 'Thêm ca mổ cấp cứu';
 
     return (
-      <SectionCard title={title} icon={<ScalpelIcon />}>
+      <SectionCard title={title}>
         <div className="space-y-4">
           {details.map((surgery, index) => (
             <div key={surgery.id} className="p-4 border border-slate-200 rounded-lg bg-slate-50 relative">
@@ -167,7 +182,7 @@ const App: React.FC = () => {
 
   const renderSevereHandovers = () => {
     return (
-      <SectionCard title="Bệnh nặng trong kíp trực và bàn giao kíp sau" icon={<AlertTriangleIcon />}>
+      <SectionCard title="Bệnh nặng trong kíp trực và bàn giao kíp sau">
         <div className="space-y-4">
           {reportData.severePatientHandovers.map((handover, index) => (
             <div key={handover.id} className="p-4 border border-slate-200 rounded-lg bg-slate-50 relative">
@@ -200,14 +215,16 @@ const App: React.FC = () => {
       <Header />
       <main className="container mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
         <div className="space-y-6">
-          <SectionCard title="Thông tin chung" icon={<InfoIcon />}>
+          <SectionCard title="Thông tin chung">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <InputField label="Tua trực ngày" type="date" name="reportDate" value={reportData.reportDate} onChange={handleInputChange} />
-              <InputField label="Kíp trực" type="text" name="onDutyTeam" value={reportData.onDutyTeam} onChange={handleInputChange} placeholder="Nhập tên các thành viên..." />
+              <div />
+              <InputField label="Bác sĩ trực" type="text" name="doctors" value={reportData.onDutyTeam.doctors} onChange={handleOnDutyTeamChange} placeholder="BS. Nguyễn Văn A,..." />
+              <InputField label="Điều dưỡng trực" type="text" name="nurses" value={reportData.onDutyTeam.nurses} onChange={handleOnDutyTeamChange} placeholder="ĐD. Trần Thị B,..." />
             </div>
           </SectionCard>
 
-          <SectionCard title="Tình hình người bệnh" icon={<UsersIcon />}>
+          <SectionCard title="Tình hình người bệnh">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
               <InputField label="Bệnh nhân cũ" type="number" name="previousPatients" value={reportData.previousPatients.toString()} onChange={handleInputChange} />
               <InputField label="Vào viện" type="number" name="newAdmissions" value={reportData.newAdmissions.toString()} onChange={handleInputChange} />
@@ -221,7 +238,7 @@ const App: React.FC = () => {
             </div>
           </SectionCard>
 
-          <SectionCard title="Phẫu thuật (Tổng quan)" icon={<ScalpelIcon />}>
+          <SectionCard title="Phẫu thuật (Tổng quan)">
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <InputField label="Số ca mổ chương trình" type="number" name="scheduledSurgeriesCount" value={reportData.scheduledSurgeriesCount.toString()} onChange={handleInputChange} />
                 <InputField label="Số ca mổ cấp cứu" type="number" name="emergencySurgeriesCount" value={reportData.emergencySurgeriesCount.toString()} onChange={handleInputChange} />
@@ -233,7 +250,7 @@ const App: React.FC = () => {
           
           {renderSevereHandovers()}
 
-          <SectionCard title="Ghi chú thêm" icon={<ClipboardListIcon />}>
+          <SectionCard title="Ghi chú thêm">
             <TextAreaField
               label="Các vấn đề khác cần báo cáo"
               name="additionalNotes"
@@ -271,6 +288,9 @@ const App: React.FC = () => {
           </div>
         </div>
       </main>
+      <footer className="text-center text-xs text-slate-500 py-4">
+        © 2024 - bshieuubdl@gmail.com
+      </footer>
     </div>
   );
 };

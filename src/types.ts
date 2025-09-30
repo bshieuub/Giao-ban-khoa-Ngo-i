@@ -17,7 +17,10 @@ export interface SeverePatientHandover {
 
 export interface ReportData {
   reportDate: string;
-  onDutyTeam: string;
+  onDutyTeam: {
+    doctors: string;
+    nurses: string;
+  };
 
   // Cập nhật các trường Tình hình người bệnh
   previousPatients: number;
@@ -38,7 +41,7 @@ export interface ReportData {
 
   // Thay thế Ghi chú/Kế hoạch bằng danh sách bàn giao
   severePatientHandovers: SeverePatientHandover[];
-  
+
   // Ghi chú thêm
   additionalNotes: string;
 }

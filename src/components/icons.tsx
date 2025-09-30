@@ -1,34 +1,5 @@
 import React from 'react';
 
-// BUH Logo Component
-export const BuhLogo: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 100 100"
-    {...props}
-  >
-    <circle cx="50" cy="50" r="48" fill="#FFFFFF" stroke="#003366" strokeWidth="4" />
-    <path
-      d="M50 25 V75 M25 50 H75"
-      stroke="#22C55E"
-      strokeWidth="12"
-      strokeLinecap="round"
-    />
-    <path
-      d="M50 25 V75 M25 50 H75"
-      stroke="#16A34A"
-      strokeWidth="6"
-      strokeLinecap="round"
-    />
-    <text x="50" y="60" fontFamily="Arial, sans-serif" fontSize="30" fill="#003366" textAnchor="middle" fontWeight="bold">
-      <tspan x="50" dy="-28">B</tspan>
-      <tspan x="50" dy="56">H</tspan>
-      <tspan x="26" y="58">U</tspan>
-    </text>
-  </svg>
-);
-
-
 const IconWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     <div className="w-6 h-6 text-blue-600">{children}</div>
 );
